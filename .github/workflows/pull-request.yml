@@ -40,7 +40,10 @@ jobs:
       - name: Set Nuget Package Version
         uses: roryprimrose/set-vs-sdk-project-version@v1
         with:
-          version: ${{ env.VERSION_NUMBER }}
+          version: ${{ steps.tag_version.outputs.new_tag }}
+          assemblyVersion: ${{ steps.tag_version.outputs.new_tag }}
+          fileVersion: ${{ steps.tag_version.outputs.new_tag }}
+          informationalVersion: ${{ steps.tag_version.outputs.new_tag }}
 
       - name: Create the package
         run: dotnet pack -c Release -o out
