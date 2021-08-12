@@ -52,7 +52,7 @@ jobs:
       - name: Create the package
         run: dotnet pack -c Release -o out
 
-      - name: Publish the package
+      - name: Setup .net
         uses: actions/setup-dotnet@v1.8.1 
         with:
           dotnet-version: 5.0.x
@@ -60,4 +60,6 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}} 
           API_KEY: ${{secrets.PACKAGES_REGISTRY_ADMIN_PAT}}
+          
+      - name: Publish the package
         run: dotnet nuget push out/*.nupkg --skip-duplicate --api-key $API_KEY --no-symbols true
