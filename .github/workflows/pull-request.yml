@@ -27,3 +27,34 @@ jobs:
         
       - name: Run unit tests
         run: dotnet test --no-restore
+          
+      - name: Version and Tag
+        id: bump_version
+        uses: mathieudutour/github-tag-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prep Version String
+        run: echo ::set-env name=VERSION_NUMBER::$(echo ${{ steps.bump_version.outputs.new_tag }} | sed 's/[v]//g')
+
+      - name: Define Package Name
+        run: echo ::set-env name=PACKAGE_NAME::$"SystemExtensions/src/SystemExtensions/bin/Release/SystemExtensions.${{ env.VERSION_NUMBER }}.nupkg"
+
+      - name: Set Nuget Package Version
+        uses: roryprimrose/set-vs-sdk-project-version@v1
+        with:
+          version: ${{ env.VERSION_NUMBER }}
+
+      - name: Create the package
+        run: dotnet pack -c Release -o out
+
+      - name: Publish the package
+        run: dotnet nuget push out/*.nupkg --skip-duplicate --api-key $API_KEY --no-symbols true
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.bump_version.outputs.new_tag }}
+          release_name: Release ${{ github.ref }}
