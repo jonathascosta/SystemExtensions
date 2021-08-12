@@ -25,6 +25,9 @@ jobs:
         uses: actions/setup-dotnet@v1.8.1 
         with:
           dotnet-version: 5.0.x
+          source-url: https://nuget.pkg.github.com/jonathascosta/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}} 
           
       - name: Build solution
         run: dotnet build
@@ -33,10 +36,7 @@ jobs:
         run: dotnet test --no-build
         
       - name: Create the package
-        run: dotnet pack --configuration Release src/SystemExtensions/SystemExtensions.csproj
-        
-      - name: Add Nuget registry
-        run: dotnet nuget add source --username jonathascosta --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/jonathascosta/index.json"
+        run: dotnet pack -c Release -o out
 
       - name: Publish the package
-        run: dotnet nuget push src/SystemExtensions/bin/Release/*.nupkg --source github
+        run: dotnet nuget push src/SystemExtensions/out/*.nupkg --skip-duplicate --no-symbols true
