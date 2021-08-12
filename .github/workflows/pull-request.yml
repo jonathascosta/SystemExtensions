@@ -27,37 +27,26 @@ jobs:
         
       - name: Run unit tests
         run: dotnet test --no-restore
+              
+      - name: Fetch tags and master for GitVersion
+        run: |
+          git fetch --tags
+          git branch --create-reflog main origin/main
           
-      - name: Version and Tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v5.6
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: main
-        env: 
-          VERSION_NUMBER: (${{ steps.tag_version.outputs.new_tag }} | sed 's/[v]//g')
-          
-      - name: Set Nuget Package Version
-        uses: roryprimrose/set-vs-sdk-project-version@v1
-        env: 
-          VERSION_NUMBER: (${{ steps.tag_version.outputs.new_tag }} | sed 's/[v]//g')
-        with:
-          version: ${{ env.VERSION_NUMBER }}
-          assemblyVersion: ${{ env.VERSION_NUMBER }}
-          fileVersion: ${{ env.VERSION_NUMBER }}
-          informationalVersion: ${{ env.VERSION_NUMBER }}
+      - name: GitVersion
+        id: gitversion  # step id used as reference for output values
+        uses: roryprimrose/rungitversion@v1
 
+      - name: Update project version
+        uses: roryprimrose/set-vs-sdk-project-version@v1
+        with:
+          version: ${{ steps.gitversion.outputs.NuGetVersionV2 }}
+          assemblyVersion: ${{ steps.gitversion.outputs.AssemblySemVer }}
+          fileVersion: ${{ steps.gitversion.outputs.MajorMinorPatch }}
+          informationalVersion: ${{ steps.gitversion.outputs.InformationalVersion }}
+          
       - name: Create the package
         run: dotnet pack -c Release -o out
 
       - name: Publish the package
         run: dotnet nuget push out/*.nupkg --skip-duplicate --api-key $API_KEY --no-symbols true
-
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.tag_version.outputs.new_tag }}
-          release_name: Release ${{ github.ref }}
-          body: ${{ steps.tag_version.outputs.changelog }}
