@@ -36,4 +36,4 @@ jobs:
         run: dotnet pack --configuration Release src/SystemExtensions/SystemExtensions.csproj
         
       - name: Publish the package
-        run: dotnet nuget push src/SystemExtensions/bin/Release/net5.0/*.nupkg 
+        run: dotnet nuget push src/SystemExtensions/bin/Release/*.nupkg 
