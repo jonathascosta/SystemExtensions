@@ -21,7 +21,7 @@ jobs:
           source-url: https://nuget.pkg.github.com/jonathascosta/index.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}} 
-          API_KEY: ${{secrets.PACKAGES_REGISTRY_ADMIN_PAT}}
+          API_KEY: ${{secrets.REPO_ADMIN}}
           
       - name: Restore dependencies
         run: dotnet restore
@@ -52,14 +52,5 @@ jobs:
       - name: Create the package
         run: dotnet pack -c Release -o out
 
-      - name: Setup .net
-        uses: actions/setup-dotnet@v1.8.1 
-        with:
-          dotnet-version: 5.0.x
-          source-url: https://nuget.pkg.github.com/jonathascosta/index.json
-        env:
-          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}} 
-          API_KEY: ${{secrets.PACKAGES_REGISTRY_ADMIN_PAT}}
-          
       - name: Publish the package
         run: dotnet nuget push out/*.nupkg --skip-duplicate --api-key $API_KEY --no-symbols true
