@@ -41,6 +41,9 @@ jobs:
         uses: roryprimrose/set-vs-sdk-project-version@v1
         with:
           version: ${{ env.VERSION_NUMBER }}
+          assemblyVersion: ${{ env.VERSION_NUMBER }}
+          fileVersion: ${{ env.VERSION_NUMBER }}
+          informationalVersion: ${{ env.VERSION_NUMBER }}
 
       - name: Create the package
         run: dotnet pack -c Release -o out
