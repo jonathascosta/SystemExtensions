@@ -1,0 +1,39 @@
+name: Workflow for pushes to default branch
+
+on:
+  push:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Restore, build, test, pack and publish
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - name: Setup .net
+        uses: actions/setup-dotnet@v1.8.1 
+        with:
+          dotnet-version: 5.0.x
+          source-url: https://nuget.pkg.github.com/jonathascosta/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}} 
+          API_KEY: ${{secrets.PACKAGES_REGISTRY_ADMIN_PAT}}
+          
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build -c Release --no-restore
+        
+      - name: Run unit tests
+        run: dotnet test --no-restore --no-build
+
+      - name: Create the package
+        run: dotnet pack -c Release -o out
+
+      - name: Publish the package
+        run: dotnet nuget push out/*.nupkg --skip-duplicate --api-key $API_KEY --no-symbols true

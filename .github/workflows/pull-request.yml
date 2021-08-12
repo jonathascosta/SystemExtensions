@@ -1,0 +1,29 @@
+name: Workflow for pull-requests
+
+on:
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Restore, build and test
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - name: Setup .net
+        uses: actions/setup-dotnet@v1.8.1 
+        with:
+          dotnet-version: 5.0.x
+          
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build -c Release --no-restore
+        
+      - name: Run unit tests
+        run: dotnet test --no-restore --no-build
