@@ -34,16 +34,14 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_branches: main
-        env: 
-          VERSION_NUMBER: ${{ steps.tag_version.outputs.new_version }}
           
       - name: Set Nuget Package Version
         uses: roryprimrose/set-vs-sdk-project-version@v1
         with:
-          version: ${{ env.VERSION_NUMBER }}
-          assemblyVersion: ${{ env.VERSION_NUMBER }}
-          fileVersion: ${{ env.VERSION_NUMBER }}
-          informationalVersion: ${{ env.VERSION_NUMBER }}
+          version: ${{ steps.tag_version.outputs.new_version }}
+          assemblyVersion: ${{ steps.tag_version.outputs.new_version }}
+          fileVersion: ${{ steps.tag_version.outputs.new_version }}
+          informationalVersion: ${{ steps.tag_version.outputs.new_version }}
 
       - name: Create the package
         run: dotnet pack -c Release -o out
