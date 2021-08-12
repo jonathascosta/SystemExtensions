@@ -39,4 +39,4 @@ jobs:
         run: dotnet pack -c Release -o out
 
       - name: Publish the package
-        run: dotnet nuget push src/SystemExtensions/out/*.nupkg --skip-duplicate --no-symbols true
+        run: dotnet nuget push out/*.nupkg --skip-duplicate --no-symbols true
