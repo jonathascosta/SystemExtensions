@@ -29,17 +29,14 @@ jobs:
         run: dotnet test --no-restore
           
       - name: Version and Tag
-        id: bump_version
-        uses: mathieudutour/github-tag-action@v1
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Prep Version String
-        run: echo ::set-env name=VERSION_NUMBER::$(echo ${{ steps.bump_version.outputs.new_tag }} | sed 's/[v]//g')
-
-      - name: Define Package Name
-        run: echo ::set-env name=PACKAGE_NAME::$"SystemExtensions/src/SystemExtensions/bin/Release/SystemExtensions.${{ env.VERSION_NUMBER }}.nupkg"
-
+          release_branches: main
+        env: 
+          VERSION_NUMBER: (${{ steps.tag_version.outputs.new_tag }} | sed 's/[v]//g')
+          
       - name: Set Nuget Package Version
         uses: roryprimrose/set-vs-sdk-project-version@v1
         with:
@@ -56,5 +53,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.bump_version.outputs.new_tag }}
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
           release_name: Release ${{ github.ref }}
+          body: ${{ steps.tag_version.outputs.changelog }}
