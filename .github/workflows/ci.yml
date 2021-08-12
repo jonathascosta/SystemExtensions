@@ -18,8 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Build, test, and publish
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-dotnet@v1.8.1 
+      - name: Get latest version
+        uses: actions/checkout@v2
+
+      - name: Setup .net
+        uses: actions/setup-dotnet@v1.8.1 
         with:
           dotnet-version: 5.0.x
           
@@ -36,4 +39,4 @@ jobs:
         run: dotnet nuget add source --username jonathascosta --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/jonathascosta/index.json"
 
       - name: Publish the package
-        run: dotnet nuget push --source src/SystemExtensions/bin/Release/*.nupkg 
+        run: dotnet nuget push --source **/*.nupkg 
