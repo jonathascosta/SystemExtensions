@@ -18,6 +18,10 @@ jobs:
         uses: actions/setup-dotnet@v1.8.1 
         with:
           dotnet-version: 5.0.x
+          source-url: https://nuget.pkg.github.com/jonathascosta/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}} 
+          API_KEY: ${{secrets.PACKAGES_REGISTRY_ADMIN_PAT}}
           
       - name: Restore dependencies
         run: dotnet restore
