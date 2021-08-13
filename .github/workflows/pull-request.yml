@@ -140,16 +140,21 @@ jobs:
       - name: Set up projects
         uses: security-code-scan/security-code-scan-add-action@v1.1
 
-      - name: Set up .net
+      - name: Set up .net 5
         uses: actions/setup-dotnet@v1.8.1 
         with:
-          dotnet-version: 3.1.x
+          dotnet-version: 5.0.x
 
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build solution
         run: dotnet build -c Release --no-restore
+
+      - name: Set up .net core 3.1
+        uses: actions/setup-dotnet@v1.8.1 
+        with:
+          dotnet-version: 3.1.x
 
       - name: Convert sarif for uploading to GitHub
         uses: security-code-scan/security-code-scan-results-action@v1.3
