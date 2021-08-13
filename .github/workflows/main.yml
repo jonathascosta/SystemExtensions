@@ -37,7 +37,7 @@ jobs:
         run: dotnet restore
 
       - name: Build solution
-        run: dotnet build -c Release --no-restore -p ${{ steps.gitversion.outputs.majorMinorPatch }}
+        run: dotnet build -c Release --no-restore -p:Version=${{ steps.gitversion.outputs.semVer }}
         
       - name: Run unit tests
         run: dotnet test --no-restore
