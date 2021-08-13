@@ -25,13 +25,6 @@ jobs:
         uses: gittools/actions/gitversion/execute@v0.9.7
         id: gitversion
 
-      - name: Display GitVersion outputs
-        run: |
-          echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
-          echo "MajorMinorPatch: ${{ steps.gitversion.outputs.majorMinorPatch }}"
-          echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
-          echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
-
       - name: Setup .net
         uses: actions/setup-dotnet@v1.8.1 
         with:
@@ -39,13 +32,12 @@ jobs:
           source-url: https://nuget.pkg.github.com/jonathascosta/index.json
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          API_KEY: ${{ secrets.ALMIGHTY }}
           
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build solution
-        run: dotnet build -c Release --no-restore
+        run: dotnet build -c Release --no-restore -p ${{ steps.gitversion.outputs.majorMinorPatch }}
         
       - name: Run unit tests
         run: dotnet test --no-restore
