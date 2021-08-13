@@ -81,7 +81,7 @@ jobs:
       - name: Publish the package
         run: dotnet nuget push out/*.nupkg --skip-duplicate --no-symbols true
         
-  lint:
+  devskim:
     name: DevSkim
     runs-on: ubuntu-latest
     permissions:
@@ -100,8 +100,8 @@ jobs:
         with:
           sarif_file: devskim-results.sarif
 
-  analyze:
-    name: Analyze
+  codeql:
+    name: CodeQL
     runs-on: ubuntu-latest
     permissions:
       actions: read
