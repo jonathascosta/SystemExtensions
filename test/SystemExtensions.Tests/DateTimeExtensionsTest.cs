@@ -56,24 +56,6 @@ namespace SystemExtensions.Tests
         }
 
         [Fact]
-        public void FirstMinuteOfDayTest()
-        {
-            var date = new DateTime(2000, 1, 14, 23, 59, 0);
-            var expected = new DateTime(2000, 1, 14);
-            var actual = date.FirstMinuteOfDay();
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public void LastMinuteOfDayTest()
-        {
-            var date = new DateTime(2000, 1, 14);
-            var expected = new DateTime(2000, 1, 14, 23, 59, 0);
-            var actual = date.LastMinuteOfDay();
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
         public void ToMonthYearTest()
         {
             var date = new DateTime(2000, 1, 14);
@@ -81,6 +63,16 @@ namespace SystemExtensions.Tests
             var actual = date.ToMonthYear();
             Assert.Equal(expected.Month, actual.Month);
             Assert.Equal(expected.Year, actual.Year);
+        }
+
+        [Fact]
+        public void ToDayMonthTest()
+        {
+            var date = new DateTime(2000, 1, 14);
+            var expected = new DayMonth(14, 1);
+            var actual = date.ToDayMonth();
+            Assert.Equal(expected.Day, actual.Day);
+            Assert.Equal(expected.Month, actual.Month);
         }
     }
 }

@@ -23,19 +23,14 @@ namespace SystemExtensions
             return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
         }
 
-        public static DateTime FirstMinuteOfDay(this DateTime date)
-        {
-            return new DateTime(date.Year, date.Month, date.Day);
-        }
-
-        public static DateTime LastMinuteOfDay(this DateTime date)
-        {
-            return new DateTime(date.Year, date.Month, date.Day, 23, 59, 0);
-        }
-
         public static MonthYear ToMonthYear(this DateTime date)
         {
             return new MonthYear(date.Month, date.Year);
+        }
+
+        public static DayMonth ToDayMonth(this DateTime date)
+        {
+            return new DayMonth(date.Day, date.Month);
         }
     }
 }
