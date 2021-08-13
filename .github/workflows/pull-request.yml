@@ -34,7 +34,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup .net
+      - name: Set up .net
         uses: actions/setup-dotnet@v1.8.1 
         with:
           dotnet-version: 5.0.x
@@ -61,7 +61,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup .net
+      - name: Set up .net
         uses: actions/setup-dotnet@v1.8.1 
         with:
           dotnet-version: 5.0.x
@@ -116,7 +116,7 @@ jobs:
       with:
         languages: 'csharp'
 
-    - name: Setup .net
+    - name: Set up .net
       uses: actions/setup-dotnet@v1.8.1 
       with:
         dotnet-version: 5.0.x      
@@ -132,23 +132,27 @@ jobs:
       
   SCS:
     name: SCS
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: nuget/setup-nuget@v1.0.5
-      - uses: microsoft/setup-msbuild@v1.0.2
+    runs-on: ubuntu-latest
+    steps:     
+      - name: Checkout repository
+        uses: actions/checkout@v2
       
-      - name: Set up projects for analysis
-        uses: security-code-scan/security-code-scan-add-action@main
-        
-      - name: Restore dependencies	
+      - name: Set up projects
+        uses: security-code-scan/security-code-scan-add-action@v1.1
+
+      - name: Set up .net
+        uses: actions/setup-dotnet@v1.8.1 
+        with:
+          dotnet-version: 5.0.x      
+
+      - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build
-        run: dotnet build --no-restore
+      - name: Build solution
+        run: dotnet build -c Release --no-restore
 
       - name: Convert sarif for uploading to GitHub
-        uses: security-code-scan/security-code-scan-results-action@main
-
-      - name: Upload sarif
+        uses: security-code-scan/security-code-scan-results-action@v1.3
+        
+      - name: Upload sarif	
         uses: github/codeql-action/upload-sarif@v1
