@@ -54,4 +54,4 @@ jobs:
         run: dotnet pack -c Release -o out -p:PackageVersion=${{ steps.gitversion.outputs.semVer }}
 
       - name: Publish the package
-        run: dotnet nuget push out/*.nupkg --skip-duplicate --api-key $API_KEY --no-symbols true
+        run: dotnet nuget push out/*.nupkg --skip-duplicate --no-symbols true
