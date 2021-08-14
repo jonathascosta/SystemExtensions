@@ -152,7 +152,5 @@ jobs:
         run: dotnet tool install -g dotnet-stryker
         
       - name: Run Stryker
-        run: |
-          cd SystemExtensions/test/SystemExtensions.Tests
-          cd test/SystemExtensions.Tests
-          dotnet stryker
+        run: dotnet stryker
+        working-directory: ./SystemExtensions/test/SystemExtensions.Tests
