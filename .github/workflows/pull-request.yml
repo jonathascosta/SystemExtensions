@@ -152,5 +152,11 @@ jobs:
         run: dotnet tool install -g dotnet-stryker
         
       - name: Run Stryker
-        run: dotnet-stryker
+        run: dotnet-stryker --reporters "['cleartext', 'html']"
         working-directory: ./test/SystemExtensions.Tests
+        
+      - name: Archive Stryker results
+        uses: actions/upload-artifact@v2
+        with:
+          name: stryker-report
+          path: '**/mutation-report.html'
