@@ -153,4 +153,4 @@ jobs:
         
       - name: Run Stryker
         run: dotnet-stryker
-        working-directory: ./SystemExtensions/test/SystemExtensions.Tests
+        working-directory: ./test/SystemExtensions.Tests
