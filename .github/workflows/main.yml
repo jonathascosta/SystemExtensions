@@ -52,7 +52,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    needs: [build, getVersion]
+    needs: [build, devskim, codeql, stryker]
     name: Publish
     steps:
       - name: Check out
@@ -82,7 +82,7 @@ jobs:
 
   tag:
     runs-on: ubuntu-latest
-    needs: [publish, getVersion]
+    needs: [publish]
     name: Tag and Release
     steps:
       - name: Check out
