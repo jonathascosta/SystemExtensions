@@ -108,24 +108,55 @@ jobs:
       contents: read
       security-events: write
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-      with:
-        languages: 'csharp'
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: 'csharp'
 
-    - name: Set up .net
-      uses: actions/setup-dotnet@v1.8.1 
-      with:
-        dotnet-version: 5.0.x      
+      - name: Set up .net
+        uses: actions/setup-dotnet@v1.8.1 
+        with:
+          dotnet-version: 5.0.x      
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build -c Release --no-restore
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+
+  stryker:
+    name: Stryker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up .net
+        uses: actions/setup-dotnet@v1.8.1 
+        with:
+          dotnet-version: 5.0.x
+          source-url: https://nuget.pkg.github.com/jonathascosta/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Set up Stryker
+        run: dotnet tool install -g dotnet-stryker
         
-    - name: Restore dependencies
-      run: dotnet restore
-
-    - name: Build solution
-      run: dotnet build -c Release --no-restore
-      
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      - name: Run Stryker
+        run: dotnet-stryker --reporters "['cleartext', 'html']"
+        working-directory: ./test/SystemExtensions.Tests
+        
+      - name: Archive Stryker results
+        uses: actions/upload-artifact@v2
+        with:
+          name: stryker-report
+          path: '**/mutation-report.html'
