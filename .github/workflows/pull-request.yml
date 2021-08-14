@@ -153,7 +153,6 @@ jobs:
         
       - name: Run Stryker
         run: |
-          cd SystemExtensions/SystemExtensions/test/SystemExtensions.Tests
           cd SystemExtensions/test/SystemExtensions.Tests
           cd test/SystemExtensions.Tests
           dotnet stryker
